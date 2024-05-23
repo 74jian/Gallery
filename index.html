@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="https://cdn.jsdelivr.net/npm/lightgallery@2.7.2/css/lightgallery-bundle.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css">
+  
+    <title>Hal's Gallery</title>
+</head>
+<body>
+<div id="lightgallery"></div>
+<script src="https://cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js"></script>
+  
+<script src="https://cdn.jsdelivr.net/npm/lightgallery@2.7.2/lightgallery.umd.js"></script>
+<script>
+async function fetchAndDisplayImages() {
+    try {
+    const response = await fetch('https://mock.apifox.com/m1/4368391-0-default/getImgs');
+    const urls = await response.json();
+    const galleryDiv = document.getElementById('lightgallery');
+
+    urls.data.forEach((url, index) => {
+        const anchor = document.createElement('a');
+        anchor.href = url;
+
+        const img = document.createElement('img');
+        img.src = `${url}?imageMogr2/auto-orient/thumbnail/400x400`;
+        img.alt = `img${index + 1}`;
+
+        anchor.appendChild(img);
+        galleryDiv.appendChild(anchor);
+    });
+
+    // 初始化Justified Gallery
+    $('#lightgallery').justifiedGallery({
+        rowHeight: 150,
+        lastRow: 'nojustify',
+        margins: 5
+    }).on('jg.complete', function () {
+        // 初始化LightGallery
+        lightGallery(document.getElementById('lightgallery'), {
+            animateThumb: false,
+            zoomFromOrigin: false,
+            allowMediaOverlap: true,
+            toggleThumb: true
+        });
+    });
+    } catch (error) {
+    console.error('Error fetching images:', error);
+    }
+}
+
+// Fetch and display images when the page loads
+window.onload = fetchAndDisplayImages;
+</script>
+</body>
+
+</html>
